@@ -1,5 +1,5 @@
 import { useEffect, useContext } from 'react'
-import { SafeAreaView } from 'react-native';
+import { SafeAreaView, FlatList } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
 import { 
@@ -12,8 +12,11 @@ import {
 
 import { TextRegular } from '../../components/texts'
 import { PrimaryButton } from '../../components/buttons'
-import Song from "../../global/@types/song";
+import { SongCard } from '../../components/songCard'
+
 import { PlayerContext } from "../../providers/player";
+
+import Song from "../../global/@types/song";
 import Playlist from "../../global/@types/playlist";
 
 const SOUNDS_LOCATIONS = '../../sounds'
@@ -26,7 +29,7 @@ export default function PlaylistScreen() {
     {
       id: 1,
       authors: ['Mutreta'],
-      picture: '',
+      picture: 'https://i1.sndcdn.com/artworks-000021467146-fbeds0-t500x500.jpg',
       isLiked: true,
       name: 'Morena',
       file: require(`${SOUNDS_LOCATIONS}/morena.mp3`)
@@ -34,7 +37,7 @@ export default function PlaylistScreen() {
     {
       id: 2,
       authors: ['Mutreta'],
-      picture: '',
+      picture: 'https://i1.sndcdn.com/artworks-000005835169-wtr0qm-t500x500.jpg',
       isLiked: false,
       name: 'Noites e Tempestades',
       file: require(`${SOUNDS_LOCATIONS}/noites-e-tempestades.mp3`)
@@ -42,7 +45,7 @@ export default function PlaylistScreen() {
     {
       id: 3,
       authors: ['Mutreta'],
-      picture: '',
+      picture: 'https://i1.sndcdn.com/artworks-000005835169-wtr0qm-t500x500.jpg',
       isLiked: false,
       name: 'Em Busca de Luz',
       file: require(`${SOUNDS_LOCATIONS}/em-busca-de-luz.mp3`)
@@ -50,7 +53,7 @@ export default function PlaylistScreen() {
     {
       id: 4,
       authors: ['Mutreta'],
-      picture: '',
+      picture: 'https://i1.sndcdn.com/artworks-000005835169-wtr0qm-t500x500.jpg',
       isLiked: false,
       name: 'Terral',
       file: require(`${SOUNDS_LOCATIONS}/terral.mp3`)
@@ -60,11 +63,12 @@ export default function PlaylistScreen() {
   const playlist: Playlist = {
     id: 1,
     name: 'Liked Songs',
+    author: 'Pedro Entringer',
     songs: songs
   }
 
   const setPlayList = async () => {
-    await playerContext.setPlaylist(1, playlist)
+    
   }
 
   useEffect(() => {
@@ -74,8 +78,8 @@ export default function PlaylistScreen() {
   return (
     <Container>
       <StatusBar style='dark' />
-      <SafeAreaView />
 
+      <SafeAreaView />
       <ScrollView>
 
         <PlaylistName>  
@@ -84,9 +88,22 @@ export default function PlaylistScreen() {
         </PlaylistName>
 
         <PlaylistInfo>
-          <TextRegular>102 Songs</TextRegular>
-          <TextRegular>6 hr, 29 min</TextRegular>
+          <TextRegular>{playlist.songs.length} songs</TextRegular>
+          <TextRegular>By {playlist.author}</TextRegular>
         </PlaylistInfo>
+
+        <FlatList 
+          data={playlist.songs}
+          keyExtractor={song => song.id.toString()}
+          renderItem={({item, index}) => {
+            return <SongCard 
+                song={item}
+                onPress={async () => {
+                  await playerContext.setPlaylist(index, playlist)
+                }} 
+              />
+          }}
+        />
 
         <PlaylistInfo>
           <TextRegular>{playerContext.player.prevs.length} prevs</TextRegular>
@@ -101,13 +118,6 @@ export default function PlaylistScreen() {
           {!playerContext.player.isPaused && (<PrimaryButton title='Pause' onPress={playerContext.handlePause} />)}
           <PrimaryButton title='Next' onPress={playerContext.handleNext} />
         </PlaylistInfo>
-
-        <PlaylistInfo>
-          <TextRegular>{JSON.stringify(playerContext.player)}</TextRegular>
-        </PlaylistInfo>
-
-        
-
         
       </ScrollView>
 
