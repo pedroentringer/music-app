@@ -1,7 +1,7 @@
 import styled from "styled-components/native";
 
 export const Bold = styled.Text`
-    font-size: 18px;
+    font-size: 22px;
     color: ${({ theme }) => theme.colors.gray[900]};
     font-weight: bold;
 `;

@@ -7,6 +7,7 @@ import PlayerProvider from './src/providers/player';
 import AppLoading from 'expo-app-loading';
 import { useFonts } from 'expo-font';
 
+import 'react-native-gesture-handler';
 import('./src/config/ReactotronConfig')
 
 

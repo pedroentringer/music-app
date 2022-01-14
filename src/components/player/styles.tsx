@@ -3,7 +3,7 @@ import { SafeAreaView } from 'react-native';
 
 import { MotiView } from 'moti'
 
-export const Container = styled.View`
+export const Container = styled(MotiView)`
     width: 100%;
     border-top-left-radius: 24px;
     border-top-right-radius: 24px;
@@ -15,6 +15,12 @@ export const Container = styled.View`
     shadow-color: ${(props) => props.theme.colors.gray[200]};
     shadow-offset: 0px 0px;
 
+    flex-direction: column;
+    justify-content: center;
+`;
+
+export const ControllsContainer = styled.View`
+    width: 100%;
     flex-direction: row;
     justify-content: space-between;
 `;
