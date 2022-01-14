@@ -36,11 +36,13 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
   const [sound, setSound] = useState<Audio.Sound | null>(new Audio.Sound());
 
   const createSound = async (song: Song) => {
-    const { sound } = await Audio.Sound.createAsync(song.file, { shouldPlay: true });
+    await sound?.unloadAsync()
 
-    setSound(sound);
+    const soundCreated = await Audio.Sound.createAsync(song.file, { shouldPlay: true });
+
+    setSound(soundCreated.sound);
     
-    await sound.playAsync(); 
+    await soundCreated.sound.playAsync(); 
   }
 
   const playPauseAudio = async (song:Song) => {
