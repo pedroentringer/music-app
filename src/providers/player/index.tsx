@@ -100,12 +100,14 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
       const prevSongs = playlist.songs.filter( (_song, index) => index < initialSongIndex)
       const nextSongs = playlist.songs.filter( (_song, index) => index > initialSongIndex)
   
-      setPlayer({
-        isLoop: false,
-        isPaused: false,
-        prevs: prevSongs,
-        nexts: nextSongs,
-        playingNow: playingNow,
+      setPlayer( prevPlayer => {
+        return {
+          ...prevPlayer,
+          isPaused: false,
+          prevs: prevSongs,
+          nexts: nextSongs,
+          playingNow: playingNow,
+        }
       })
 
       if(playingNow.id !== player.playingNow?.id){
@@ -136,7 +138,13 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
 
       const nextSong = prevPlayer.nexts.shift();
 
-      if(!nextSong) return prevPlayer;
+      if(!nextSong) {
+        return {
+          ...prevPlayer,
+          isPaused: true,
+          playingNow: null
+        };
+      }
 
       if(prevPlayer.playingNow){
         prevPlayer.prevs.push(prevPlayer.playingNow)
@@ -159,7 +167,13 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
 
       const nextSong = prevPlayer.prevs.pop();
 
-      if(!nextSong) return prevPlayer;
+      if(!nextSong) {
+        return {
+          ...prevPlayer,
+          isPaused: true,
+          playingNow: null
+        };
+      }
 
       if(prevPlayer.playingNow){
         prevPlayer.nexts.unshift(prevPlayer.playingNow)

@@ -13,6 +13,7 @@ import {
 import { TextRegular } from '../../components/texts'
 import { PrimaryButton } from '../../components/buttons'
 import { SongCard } from '../../components/songCard'
+import Player from '../../components/player'
 
 import { PlayerContext } from "../../providers/player";
 
@@ -76,51 +77,40 @@ export default function PlaylistScreen() {
   }, []);
 
   return (
-    <Container>
-      <StatusBar style='dark' />
+    <>
+      <Container>
+        <StatusBar style='dark' />
 
-      <SafeAreaView />
-      <ScrollView>
+        <SafeAreaView />
+        <ScrollView showsVerticalScrollIndicator={false}>
 
-        <PlaylistName>  
-          <TextRegular>Playlist</TextRegular>
-          <Title>Have a Great Day!</Title>
-        </PlaylistName>
+          <PlaylistName>  
+            <TextRegular>Playlist</TextRegular>
+            <Title>Have a Great Day!</Title>
+          </PlaylistName>
 
-        <PlaylistInfo>
-          <TextRegular>{playlist.songs.length} songs</TextRegular>
-          <TextRegular>By {playlist.author}</TextRegular>
-        </PlaylistInfo>
+          <PlaylistInfo>
+            <TextRegular>{playlist.songs.length} songs</TextRegular>
+            <TextRegular>By {playlist.author}</TextRegular>
+          </PlaylistInfo>
 
-        <FlatList 
-          data={playlist.songs}
-          keyExtractor={song => song.id.toString()}
-          renderItem={({item, index}) => {
-            return <SongCard 
-                song={item}
-                onPress={async () => {
-                  await playerContext.playSongByIndex(index)
-                }} 
-              />
-          }}
-        />
+          <FlatList 
+            data={playlist.songs}
+            keyExtractor={song => song.id.toString()}
+            renderItem={({item, index}) => {
+              return <SongCard 
+                  song={item}
+                  onPress={async () => {
+                    await playerContext.playSongByIndex(index)
+                  }} 
+                />
+            }}
+          />
+          
+        </ScrollView>
 
-        <PlaylistInfo>
-          <TextRegular>{playerContext.player.prevs.length} prevs</TextRegular>
-          <TextRegular>{playerContext.player.playingNow?.name || '-'}</TextRegular>
-          <TextRegular>{playerContext.player.nexts.length} nexts</TextRegular>
-        </PlaylistInfo>
-
-
-        <PlaylistInfo>
-          <PrimaryButton title='Prev' onPress={playerContext.handlePrevius} />
-          {playerContext.player.isPaused && (<PrimaryButton title='Play' onPress={playerContext.handlePlay} />)}
-          {!playerContext.player.isPaused && (<PrimaryButton title='Pause' onPress={playerContext.handlePause} />)}
-          <PrimaryButton title='Next' onPress={playerContext.handleNext} />
-        </PlaylistInfo>
-        
-      </ScrollView>
-
-    </Container>
+      </Container>
+      <Player />
+    </>
   );
 }
