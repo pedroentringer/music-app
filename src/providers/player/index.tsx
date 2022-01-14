@@ -7,7 +7,8 @@ import Song from '../../global/@types/song'
 
 export interface ContextProvider {
   player: Player,
-  setPlaylist: (initialSongIndex: number, playlist: Playlist) => Promise<void>,
+  initPlaylist: (playlist: Playlist) => Promise<void>,
+  playSongByIndex: (initialSongIndex: number) => Promise<void>,
   handlePlay: () => Promise<void>,
   handlePause: () => Promise<void>,
   handleNext: () => Promise<void>,
@@ -32,6 +33,7 @@ const DEFAULT_VALUE : Player = {
 
 const PlayerProvider = ({ children }: PlayerProviderProps) => {
 
+  const [playlist, setPlaylist] = useState<Playlist | null>()
   const [player, setPlayer] = useState(DEFAULT_VALUE)
   const [sound, setSound] = useState<Audio.Sound | null>(new Audio.Sound());
 
@@ -78,7 +80,9 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
     }
   };
 
-  const setPlaylist = async (initialSongIndex: number, playlist: Playlist) => {
+  const initPlaylist = async (playlist: Playlist) => {
+    setPlaylist(playlist)
+    
     await Audio.requestPermissionsAsync();
     await Audio.setAudioModeAsync({
       interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
@@ -88,20 +92,30 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
       staysActiveInBackground: true,
       playsInSilentModeIOS: true,
     });
+  }
 
-    const playingNow:Song = playlist.songs[initialSongIndex];
-    const prevSongs = playlist.songs.filter( (_song, index) => index < initialSongIndex)
-    const nextSongs = playlist.songs.filter( (_song, index) => index > initialSongIndex)
+  const playSongByIndex = async (initialSongIndex: number) => {
+    if(playlist){
+      const playingNow:Song = playlist.songs[initialSongIndex];
+      const prevSongs = playlist.songs.filter( (_song, index) => index < initialSongIndex)
+      const nextSongs = playlist.songs.filter( (_song, index) => index > initialSongIndex)
+  
+      setPlayer({
+        isLoop: false,
+        isPaused: false,
+        prevs: prevSongs,
+        nexts: nextSongs,
+        playingNow: playingNow,
+      })
 
-    setPlayer({
-      isLoop: false,
-      isPaused: false,
-      prevs: prevSongs,
-      nexts: nextSongs,
-      playingNow: playingNow,
-    })
-
-    await createSound(playingNow)
+      if(playingNow.id !== player.playingNow?.id){
+        await sound?.unloadAsync()
+        await createSound(playingNow)
+      }else{
+        await playPauseAudio(playingNow)
+      }
+  
+    }
   }
 
   const handlePlay = async () => {
@@ -178,7 +192,8 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
   return (
     <PlayerContext.Provider value={{
       player,
-      setPlaylist,
+      initPlaylist,
+      playSongByIndex,
       handlePlay,
       handlePause,
       handleNext,

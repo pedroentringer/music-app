@@ -68,7 +68,7 @@ export default function PlaylistScreen() {
   }
 
   const setPlayList = async () => {
-    
+    await playerContext.initPlaylist(playlist)
   }
 
   useEffect(() => {
@@ -99,7 +99,7 @@ export default function PlaylistScreen() {
             return <SongCard 
                 song={item}
                 onPress={async () => {
-                  await playerContext.setPlaylist(index, playlist)
+                  await playerContext.playSongByIndex(index)
                 }} 
               />
           }}
