@@ -6,6 +6,8 @@ export const Container = styled(MotiView)`
     height: 5px;
     position: relative;
     margin: 16px 0px;
+    border-radius: 8px;
+    overflow: hidden;
 `;
 
 export const Bar = styled.View`
@@ -26,6 +28,7 @@ export const Progress = styled(MotiView)`
     left: 0;
     z-index: 2;
 
+    max-width: 100%;
     width: 50px;
     height: 5px;
     border-radius: 8px;

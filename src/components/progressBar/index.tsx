@@ -28,7 +28,9 @@ const ProgressBar = () => {
         width: event.absoluteX
       })
     },
-    onEnd: async () => {
+    onEnd: async (event) => {
+      console.log(event)
+      runOnJS(playerContext.setPositionInMillis)(30000)
       runOnJS(playerContext.handlePlay)()
     },
   });

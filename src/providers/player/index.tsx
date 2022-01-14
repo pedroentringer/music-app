@@ -14,7 +14,8 @@ export interface ContextProvider {
   handleNext: () => Promise<void>,
   handlePrevius: () => Promise<void>,
   handleLoop: () => Promise<void>,
-  handleClose: () => Promise<void>
+  handleClose: () => Promise<void>,
+  setPositionInMillis: (millis: number) => Promise<void>
 }
 
 export const PlayerContext = createContext({} as ContextProvider)
@@ -36,6 +37,12 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
   const [playlist, setPlaylist] = useState<Playlist | null>()
   const [player, setPlayer] = useState(DEFAULT_VALUE)
   const [sound, setSound] = useState<Audio.Sound | null>(new Audio.Sound());
+
+  const setPositionInMillis = async (millis: number) => {
+    if(sound){
+      await sound.setPositionAsync(millis)
+    }
+  }
 
   const createSound = async (song: Song) => {
     await sound?.unloadAsync()
@@ -213,7 +220,8 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
       handleNext,
       handlePrevius,
       handleLoop,
-      handleClose
+      handleClose,
+      setPositionInMillis
     }}>
       {children}
     </PlayerContext.Provider>
