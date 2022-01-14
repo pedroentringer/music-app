@@ -8,7 +8,7 @@ export const Container = styled(MotiView)`
     border-top-left-radius: 24px;
     border-top-right-radius: 24px;
     background-color: ${(props) => props.theme.colors.secondary};
-    padding: 24px;
+    padding: 0px 24px 24px 24px;
     elevation: 1;
     shadow-opacity: 1;
     shadow-radius: 5px;
@@ -19,27 +19,18 @@ export const Container = styled(MotiView)`
     justify-content: center;
 `;
 
+export const MiniBar = styled.View`
+    width: 50px;
+    height: 5px;
+    border-radius: 8px;
+    background-color: ${({ theme }) => theme.colors.gray[500]}ac;
+    margin: 15px 0px 15px 0px
+`;
+
 export const ControllsContainer = styled.View`
     width: 100%;
     flex-direction: row;
     justify-content: space-between;
-`;
-
-export const ContainerSubMenu = styled(MotiView)`
-    width: 100%;
-    border-top-left-radius: 24px;
-    border-top-right-radius: 24px;
-    background-color: ${(props) => props.theme.colors.primary};
-    padding: 16px 24px 40px 24px;
-    elevation: 1;
-    shadow-opacity: 1;
-    shadow-radius: 5px;
-    shadow-color: ${(props) => props.theme.colors.gray[200]};
-    shadow-offset: 0px 0px;
-    flex-direction: row;
-    justify-content: space-between;
-    position: absolute;
-    bottom: 95px;
 `;
 
 export const SafeArea = styled(SafeAreaView)`

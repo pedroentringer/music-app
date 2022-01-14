@@ -1,5 +1,5 @@
 import React, { createContext, ReactNode, useState } from 'react'
-import { Audio } from 'expo-av';
+import { Audio, AVPlaybackStatus } from 'expo-av';
 
 import Player from '../../global/@types/player'
 import Playlist from '../../global/@types/playlist'
@@ -7,6 +7,7 @@ import Song from '../../global/@types/song'
 
 export interface ContextProvider {
   player: Player,
+  playbackStatus: AVPlaybackStatus | null,
   initPlaylist: (playlist: Playlist) => Promise<void>,
   playSongByIndex: (initialSongIndex: number) => Promise<void>,
   handlePlay: () => Promise<void>,
@@ -15,7 +16,7 @@ export interface ContextProvider {
   handlePrevius: () => Promise<void>,
   handleLoop: () => Promise<void>,
   handleClose: () => Promise<void>,
-  setPositionInMillis: (millis: number) => Promise<void>
+  setPositionInMillis: (millis: number) => Promise<void>,
 }
 
 export const PlayerContext = createContext({} as ContextProvider)
@@ -36,7 +37,10 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
 
   const [playlist, setPlaylist] = useState<Playlist | null>()
   const [player, setPlayer] = useState(DEFAULT_VALUE)
+  const [playbackStatus, setPlaybackStatus] = useState<AVPlaybackStatus | null>(null)
   const [sound, setSound] = useState<Audio.Sound | null>(new Audio.Sound());
+
+  const onPlaybackStatusUpdate = (status: AVPlaybackStatus) => setPlaybackStatus(status)
 
   const setPositionInMillis = async (millis: number) => {
     if(sound){
@@ -48,6 +52,8 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
     await sound?.unloadAsync()
 
     const soundCreated = await Audio.Sound.createAsync(song.file, { shouldPlay: true });
+
+    soundCreated.sound.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
 
     setSound(soundCreated.sound);
     
@@ -213,6 +219,7 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
   return (
     <PlayerContext.Provider value={{
       player,
+      playbackStatus,
       initPlaylist,
       playSongByIndex,
       handlePlay,
