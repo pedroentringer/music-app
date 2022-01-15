@@ -11,7 +11,7 @@ import { Center } from '../../global/styles';
 
 import { IconPrimaryButton, IconButton, DefaultButton } from '../../components/buttons'
 
-import { MotiView, useAnimationState, AnimatePresence } from 'moti'
+import { useAnimationState, AnimatePresence } from 'moti'
 import { PlayerContext } from '../../providers/player';
 import { TextBold, TextRegular } from '../texts';
 import ProgressBar from '../progressBar';
@@ -31,46 +31,65 @@ function msToTime(durationInMillis: number) {
 const Player = () => {
   const playerContext = useContext(PlayerContext)
 
+  const containerState = useAnimationState({
+    closed: {
+      translateY: 500,
+      opacity: 0
+    },
+    open: {
+      translateY: 0,
+      opacity: 1
+    }
+  })
+
+  useEffect(() => {
+    if(playerContext.player.playingNow.song){
+      if(containerState.current === 'closed'){
+        containerState.transitionTo('open')
+      }
+    }else{
+      containerState.transitionTo('closed')
+    }
+
+  }, [playerContext.player.playingNow.song])
+
   return (
-    <AnimatePresence>
-      <>
-      {playerContext.player.playingNow && (
-        <Container>
-            <Center>
-              <MiniBar />
-            </Center>
+    <>
+      <Container state={containerState} transition={{type: 'timing', duration: 300}}>
+        <Center>
+          <MiniBar />
+        </Center>
 
-            <TextBold>{playerContext.player.playingNow?.name}</TextBold>
-            <TextRegular>{playerContext.player.playingNow?.authors.join(', ')}</TextRegular>
+        <TextBold>{playerContext.player.playingNow.song?.name}</TextBold>
+        <TextRegular>{playerContext.player.playingNow.song?.authors.join(', ')}</TextRegular>
 
-            <ProgressBar />
+        <ProgressBar />
 
-            <ControllsContainer>
+        <ControllsContainer>
 
-              {playerContext.player.isLoop && (
-                <IconPrimaryButton icon='loop' onPress={playerContext.handleLoop} />
-                )}
+          {playerContext.player.isLoop && (
+            <IconPrimaryButton icon='loop' onPress={playerContext.handleLoop} />
+            )}
 
-              {!playerContext.player.isLoop && (
-                <IconButton icon='loop' onPress={playerContext.handleLoop}/>
-                )}
+          {!playerContext.player.isLoop && (
+            <IconButton icon='loop' onPress={playerContext.handleLoop}/>
+            )}
 
-              <>
-                <IconButton icon='arrow-back' onPress={playerContext.handlePrevius}/>
-                {playerContext.player.isPaused && (<IconButton icon='play-arrow' onPress={playerContext.handlePlay}/>)}
-                {!playerContext.player.isPaused && (<IconButton icon='pause' onPress={playerContext.handlePause}/>)}
-                <IconButton icon='arrow-forward' onPress={playerContext.handleNext}/>
-              </>
+          <>
+            <IconButton icon='arrow-back' onPress={playerContext.handlePrevius}/>
+            {playerContext.player.isPaused && (<IconButton icon='play-arrow' onPress={playerContext.handlePlay}/>)}
+            {!playerContext.player.isPaused && (<IconButton icon='pause' onPress={playerContext.handlePause}/>)}
+            <IconButton icon='arrow-forward' onPress={playerContext.handleNext}/>
+          </>
 
-              <IconButton icon='favorite-border' />
+          <IconButton icon='favorite-border' />
 
-            </ControllsContainer>
+        </ControllsContainer>
 
-          </Container>
-      )}
+      </Container>
+      
       <SafeArea />
-      </>
-    </AnimatePresence>
+    </>
   )
 
 }

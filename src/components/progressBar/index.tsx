@@ -11,6 +11,7 @@ import {
 } from './styles'
 
 import { PlayerContext } from '../../providers/player';
+import { AVPlaybackStatus } from 'expo-av';
 
 const ProgressBar = () => {
 
@@ -19,20 +20,22 @@ const ProgressBar = () => {
   const animation = useDynamicAnimation(() => ({
     width: 0
   }))
-  
+
+  const onPlaybackStatusUpdate = (status: AVPlaybackStatus) => {
+    const current = animation.current?.width as number || 0 
+    
+    animation.animateTo({
+      width: current + 1
+    })
+  }
+
   useEffect(() => {
 
-    if(playerContext.playbackStatus && playerContext.playbackStatus.playableDurationMillis && playerContext.playbackStatus.positionMillis){
- 
-      const current = animation.current?.width as number || 0 
-      
-      animation.animateTo({
-        width: current + 1
-      })
-
-
+    if(playerContext.player.playingNow.sound){
+      playerContext.player.playingNow.sound.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
     }
-  }, [playerContext.playbackStatus])
+  
+  }, [playerContext.player.playingNow.sound])
 
   const gestureHandler = useAnimatedGestureHandler({
     onStart: async () => {

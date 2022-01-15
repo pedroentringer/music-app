@@ -37,7 +37,7 @@ export const SongCard = (props:IProps) => {
           }}
         />
 
-        {player.playingNow && player.playingNow.id === song.id && (
+        {player.playingNow.song && player.playingNow.song.id === song.id && (
           <SongImageGradient>
             {!player.isPaused && (<IconPause />)}
             {player.isPaused && (<IconPlay />)}

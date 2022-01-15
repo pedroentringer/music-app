@@ -1,5 +1,5 @@
 import React, { createContext, ReactNode, useState } from 'react'
-import { Audio, AVPlaybackStatus } from 'expo-av';
+import { Audio } from 'expo-av';
 
 import Player from '../../global/@types/player'
 import Playlist from '../../global/@types/playlist'
@@ -7,7 +7,6 @@ import Song from '../../global/@types/song'
 
 export interface ContextProvider {
   player: Player,
-  playbackStatus: AVPlaybackStatus | null,
   initPlaylist: (playlist: Playlist) => Promise<void>,
   playSongByIndex: (initialSongIndex: number) => Promise<void>,
   handlePlay: () => Promise<void>,
@@ -30,45 +29,50 @@ const DEFAULT_VALUE : Player = {
   isPaused: false,
   prevs: [],
   nexts: [],
-  playingNow: null,
+  playingNow: {
+    song: null,
+    sound: null,
+  },
 }
 
 const PlayerProvider = ({ children }: PlayerProviderProps) => {
 
   const [playlist, setPlaylist] = useState<Playlist | null>()
   const [player, setPlayer] = useState(DEFAULT_VALUE)
-  const [playbackStatus, setPlaybackStatus] = useState<AVPlaybackStatus | null>(null)
-  const [sound, setSound] = useState<Audio.Sound | null>(new Audio.Sound());
-
-  const onPlaybackStatusUpdate = (status: AVPlaybackStatus) => setPlaybackStatus(status)
 
   const setPositionInMillis = async (millis: number) => {
-    if(sound){
-      await sound.setPositionAsync(millis)
+    if(player.playingNow.sound){
+      await player.playingNow.sound.setPositionAsync(millis)
     }
   }
 
   const createSound = async (song: Song) => {
-    await sound?.unloadAsync()
+    await player.playingNow.sound?.unloadAsync()
 
     const soundCreated = await Audio.Sound.createAsync(song.file, { shouldPlay: true });
-
-    soundCreated.sound.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
-
-    setSound(soundCreated.sound);
     
     await soundCreated.sound.playAsync(); 
+
+    setPlayer( prevPlayer => {
+      return {
+        ...prevPlayer,
+        playingNow: {
+          ...prevPlayer.playingNow,
+          sound: soundCreated.sound
+        }
+      }
+    })
   }
 
   const playPauseAudio = async (song:Song) => {
     
-    if(!sound) return await createSound(song)
+    if(!player.playingNow.sound) return await createSound(song)
 
     if (player.isPaused) {
-      const soundStatus = await sound.getStatusAsync()
+      const soundStatus = await player.playingNow.sound.getStatusAsync()
       
       if(soundStatus.isLoaded && !soundStatus.didJustFinish){
-        await sound.playAsync();
+        await player.playingNow.sound.playAsync();
       }else{
         await createSound(song)
       }
@@ -81,7 +85,7 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
       })
     } else {
 
-      await sound.pauseAsync();
+      await player.playingNow.sound.pauseAsync();
 
       setPlayer( prevPlayer => {
         return {
@@ -119,12 +123,15 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
           isPaused: false,
           prevs: prevSongs,
           nexts: nextSongs,
-          playingNow: playingNow,
+          playingNow: {
+            ...prevPlayer.playingNow,
+            song: playingNow,
+          },
         }
       })
 
-      if(playingNow.id !== player.playingNow?.id){
-        await sound?.unloadAsync()
+      if(playingNow.id !== player.playingNow.song?.id){
+        await player.playingNow.sound?.unloadAsync()
         await createSound(playingNow)
       }else{
         await playPauseAudio(playingNow)
@@ -134,19 +141,19 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
   }
 
   const handlePlay = async () => {
-    if(player.playingNow){
-      await playPauseAudio(player.playingNow)
+    if(player.playingNow.song){
+      await playPauseAudio(player.playingNow.song)
     }
   }
 
   const handlePause = async () => {
-    if(player.playingNow){
-      await playPauseAudio(player.playingNow)
+    if(player.playingNow.song){
+      await playPauseAudio(player.playingNow.song)
     }
   }
 
   const handleNext = async () => {
-    await sound?.unloadAsync()
+    await player.playingNow.sound?.unloadAsync()
     setPlayer( prevPlayer => {
 
       const nextSong = prevPlayer.nexts.shift();
@@ -155,15 +162,21 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
         return {
           ...prevPlayer,
           isPaused: true,
-          playingNow: null
+          playingNow: {
+            song: null,
+            sound: null
+          }
         };
       }
 
-      if(prevPlayer.playingNow){
-        prevPlayer.prevs.push(prevPlayer.playingNow)
+      if(prevPlayer.playingNow.song){
+        prevPlayer.prevs.push(prevPlayer.playingNow.song)
       }
 
-      prevPlayer.playingNow = nextSong;
+      prevPlayer.playingNow = {
+        song: nextSong,
+        sound: null
+      }
 
       createSound(nextSong)
 
@@ -175,7 +188,7 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
   }
 
   const handlePrevius = async () => {
-    await sound?.unloadAsync()
+    await player.playingNow.sound?.unloadAsync()
     setPlayer( prevPlayer => {
 
       const nextSong = prevPlayer.prevs.pop();
@@ -184,15 +197,21 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
         return {
           ...prevPlayer,
           isPaused: true,
-          playingNow: null
+          playingNow: {
+            song: null,
+            sound: null
+          }
         };
       }
 
-      if(prevPlayer.playingNow){
-        prevPlayer.nexts.unshift(prevPlayer.playingNow)
+      if(prevPlayer.playingNow.song){
+        prevPlayer.nexts.unshift(prevPlayer.playingNow.song)
       }
 
-      prevPlayer.playingNow = nextSong;
+      prevPlayer.playingNow = {
+        song: nextSong,
+        sound: null
+      }
 
       createSound(nextSong)
 
@@ -219,7 +238,6 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
   return (
     <PlayerContext.Provider value={{
       player,
-      playbackStatus,
       initPlaylist,
       playSongByIndex,
       handlePlay,
