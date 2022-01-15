@@ -265,9 +265,9 @@ const Player = () => {
             <TextBold>{playerContext.player.playingNow.song.name}</TextBold>
             <TextRegular>{playerContext.player.playingNow.song.authors.join(', ')}</TextRegular>
 
-            <Animated.View>
-              <TextRegular>{time.progress.minutes}:{time.progress.seconds}</TextRegular>
-              <TextRegular>{time.total.minutes}:{time.total.seconds}</TextRegular>
+            <Animated.View style={[{flexDirection: 'row', justifyContent: 'space-between'}]}>
+              <TextRegular>{time.progress.minutes.toString().padStart(2, '0')}:{time.progress.seconds.toString().padStart(2, '0')}</TextRegular>
+              <TextRegular>{time.total.minutes.toString().padStart(2, '0')}:{time.total.seconds.toString().padStart(2, '0')}</TextRegular>
             </Animated.View>
     
             <ProgressBar playableDurationMillis={time.playableDurationMillis} positionMillis={time.positionMillis}/>

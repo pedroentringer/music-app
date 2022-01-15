@@ -11,7 +11,6 @@ import {
 } from './styles'
 
 import { PlayerContext } from '../../providers/player';
-import { AVPlaybackStatus } from 'expo-av';
 import { LayoutChangeEvent } from 'react-native';
 
 interface IProps {
