@@ -33,6 +33,12 @@ export const ControllsContainer = styled.View`
     justify-content: space-between;
 `;
 
+export const SongImage = styled.Image`
+    width: 200px;
+    height: 200px;
+    border-radius: 100px;
+`;
+
 export const SafeArea = styled(SafeAreaView)`
     background-color: ${(props) => props.theme.colors.secondary};
 `;

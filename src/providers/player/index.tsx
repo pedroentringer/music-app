@@ -153,7 +153,6 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
   }
 
   const handleNext = async () => {
-    await player.playingNow.sound?.unloadAsync()
     setPlayer( prevPlayer => {
 
       const nextSong = prevPlayer.nexts.shift();
@@ -174,8 +173,8 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
       }
 
       prevPlayer.playingNow = {
+        ...prevPlayer.playingNow,
         song: nextSong,
-        sound: null
       }
 
       createSound(nextSong)
@@ -188,7 +187,6 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
   }
 
   const handlePrevius = async () => {
-    await player.playingNow.sound?.unloadAsync()
     setPlayer( prevPlayer => {
 
       const nextSong = prevPlayer.prevs.pop();
@@ -209,8 +207,8 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
       }
 
       prevPlayer.playingNow = {
+        ...prevPlayer.playingNow,
         song: nextSong,
-        sound: null
       }
 
       createSound(nextSong)

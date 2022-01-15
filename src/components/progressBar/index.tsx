@@ -61,7 +61,7 @@ const ProgressBar = () => {
       <Container>
         <BarContainer>
           <Bar />
-          <Progress state={animation} transition={{type: 'timing'}}/>
+          <Progress state={animation} transition={{type: 'timing', duration: 0}}/>
         </BarContainer>
       </Container>
     </PanGestureHandler>

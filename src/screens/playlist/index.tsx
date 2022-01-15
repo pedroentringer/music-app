@@ -1,5 +1,5 @@
 import { useEffect, useContext } from 'react'
-import { SafeAreaView, FlatList } from 'react-native';
+import { SafeAreaView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
 import { 
@@ -11,7 +11,6 @@ import {
 } from './styles'
 
 import { TextRegular } from '../../components/texts'
-import { PrimaryButton } from '../../components/buttons'
 import { SongCard } from '../../components/songCard'
 import Player from '../../components/player'
 
@@ -19,6 +18,7 @@ import { PlayerContext } from "../../providers/player";
 
 import Song from "../../global/@types/song";
 import Playlist from "../../global/@types/playlist";
+import { MotiView } from 'moti';
 
 const SOUNDS_LOCATIONS = '../../sounds'
 
@@ -94,18 +94,37 @@ export default function PlaylistScreen() {
             <TextRegular>By {playlist.author}</TextRegular>
           </PlaylistInfo>
 
-          <FlatList 
-            data={playlist.songs}
-            keyExtractor={song => song.id.toString()}
-            renderItem={({item, index}) => {
-              return <SongCard 
-                  song={item}
-                  onPress={async () => {
-                    await playerContext.playSongByIndex(index)
-                  }} 
-                />
-            }}
-          />
+          {
+            playlist.songs.map((song, index) => {
+              const key = `song-card-${index}-${song.id}`;
+
+              return (
+                <MotiView
+                  key={key} 
+                  from={{
+                    translateY: 20,
+                    opacity: 0
+                  }}
+                  animate={{
+                    translateY: 0,
+                    opacity: 1,
+                  }}
+                  transition={{
+                    type: 'timing',
+                    duration: 300,
+                    delay: 500 + (100 * index)
+                  }}
+                >
+                  <SongCard 
+                    song={song}
+                    onPress={async () => {
+                      await playerContext.playSongByIndex(index)
+                    }} 
+                  />
+                </MotiView>
+              )
+            })
+          }
           
         </ScrollView>
 
