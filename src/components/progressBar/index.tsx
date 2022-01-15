@@ -13,13 +13,18 @@ import {
 import { PlayerContext } from '../../providers/player';
 import { AVPlaybackStatus } from 'expo-av';
 import { LayoutChangeEvent } from 'react-native';
-import { TextBold } from '../texts';
 
-const ProgressBar = () => {
+interface IProps {
+  playableDurationMillis: number
+  positionMillis: number
+}
+
+const ProgressBar = ({ playableDurationMillis, positionMillis }: IProps) => {
 
   const playerContext = useContext(PlayerContext)
 
   const [isDrag, setIsDrag] = useState(false)
+
   const [maxWidth, setMaxWidth] = useState(0)
 
   const animation = useDynamicAnimation(() => ({
@@ -35,7 +40,7 @@ const ProgressBar = () => {
 
   }
 
-  const onPlaybackStatusUpdate = ({ playableDurationMillis, positionMillis }: AVPlaybackStatus) => {
+  useEffect(() => {
     setIsDrag((prevIsDrag) => {
       if(!prevIsDrag){
         const progressInPercent =  (100 * positionMillis) / playableDurationMillis;
@@ -49,19 +54,11 @@ const ProgressBar = () => {
 
       return prevIsDrag
     })
-  }
-
-  useEffect(() => {
-
-    if(playerContext.player.playingNow.sound){
-      playerContext.player.playingNow.sound.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
-    }
-  
-  }, [playerContext.player.playingNow.sound])
+  }, [playableDurationMillis, positionMillis])
 
   const processGestureNewWidth = async (event: Readonly<GestureEventPayload & PanGestureHandlerEventPayload>) => { 
     if(playerContext.player.playingNow.sound){
-      const { playableDurationMillis } = await playerContext.player.playingNow.sound.getStatusAsync()
+      //const { playableDurationMillis } = await playerContext.player.playingNow.sound.getStatusAsync()
 
       const progressInPercent =  (100 * event.absoluteX) / maxWidth;
   

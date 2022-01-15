@@ -1,7 +1,6 @@
 import styled from "styled-components/native";
 import { SafeAreaView } from 'react-native';
 
-import { MotiView } from 'moti'
 import Animated from "react-native-reanimated";
 
 export const ContainerMaster = styled.View`
@@ -18,7 +17,7 @@ export const ContainerMasterBackground = styled(Animated.View)`
     top; 0;
     left: 0;
     z-index: 6;
-    background-color: ${({theme}) => theme.colors.primary}
+    background-color: ${({theme}) => theme.colors.gray[900]}
     opacity: 0;
     width: 100%;
     height: 100%;
@@ -40,7 +39,7 @@ export const Container = styled(Animated.View)`
     elevation: 1;
     shadow-opacity: 1;
     shadow-radius: 5px;
-    shadow-color: ${(props) => props.theme.colors.gray[200]};
+    shadow-color: ${(props) => props.theme.colors.gray[900]}1c;
     shadow-offset: 0px 0px;
 
     flex-direction: column;
@@ -59,14 +58,4 @@ export const ControllsContainer = styled.View`
     width: 100%;
     flex-direction: row;
     justify-content: space-between;
-`;
-
-export const SongImage = styled.Image`
-    width: 200px;
-    height: 200px;
-    border-radius: 100px;
-`;
-
-export const SafeArea = styled(SafeAreaView)`
-    background-color: ${(props) => props.theme.colors.secondary};
 `;
