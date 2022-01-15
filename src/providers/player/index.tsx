@@ -230,6 +230,11 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
   }
 
   const handleClose = async () => {
+    if(player.playingNow.sound){
+      await player.playingNow.sound.pauseAsync();
+      await player.playingNow.sound.unloadAsync();
+    }
+
     setPlayer(DEFAULT_VALUE)
   }
 

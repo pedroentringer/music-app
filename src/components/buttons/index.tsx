@@ -86,3 +86,13 @@ export const IconButton = (props:IDefaultWithIconProps) => {
     </Transparent>
   )
 };
+
+export const PlayPauseButton = (props:IDefaultWithIconProps) => {
+  const { onPress, icon } = props
+
+  return (
+    <Primary onPress={onPress}>
+      <IconPrimary name={icon} size={70} />
+    </Primary>
+  )
+};

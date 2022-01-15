@@ -88,8 +88,6 @@ const ProgressBar = () => {
   });
 
   return (
-    <>
-          <TextBold>isDrag: {JSON.stringify(isDrag)}</TextBold>
     <PanGestureHandler onGestureEvent={gestureHandler}>
       <Container>
         <BarContainer>
@@ -98,7 +96,6 @@ const ProgressBar = () => {
         </BarContainer>
       </Container>
     </PanGestureHandler>
-    </>
   )
 };
 
