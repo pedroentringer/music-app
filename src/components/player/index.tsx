@@ -14,7 +14,6 @@ import { Center } from '../../global/styles';
 
 import { IconPrimaryButton, IconButton, PlayPauseButton } from '../../components/buttons'
 
-import { AnimatePresence, MotiView } from 'moti'
 import { PlayerContext } from '../../providers/player';
 import { TextBold, TextRegular } from '../texts';
 import ProgressBar from '../progressBar';
@@ -257,7 +256,7 @@ const Player = () => {
               <Animated.Image style={pictureAnimatedStyle} source={{uri: playerContext.player.playingNow.song.picture}} />
               
               <Animated.View style={[categoryAnimatedStyle, {backgroundColor: '#0477FD'}]}>
-                <Animated.Text style={[{fontSize: 14, color: '#fff'}]}>Teste</Animated.Text>
+                <Animated.Text style={[{fontSize: 14, color: '#fff'}]}>{playerContext.player.playingNow.song.category}</Animated.Text>
               </Animated.View>
             
             </Animated.View>

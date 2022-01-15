@@ -33,6 +33,7 @@ export default function PlaylistScreen() {
       picture: 'https://i1.sndcdn.com/artworks-000021467146-fbeds0-t500x500.jpg',
       isLiked: true,
       name: 'Morena',
+      category: 'MPB',
       file: require(`${SOUNDS_LOCATIONS}/morena.mp3`)
     },
     {
@@ -41,6 +42,7 @@ export default function PlaylistScreen() {
       picture: 'https://i1.sndcdn.com/artworks-000005835169-wtr0qm-t500x500.jpg',
       isLiked: false,
       name: 'Noites e Tempestades',
+      category: 'MPB',
       file: require(`${SOUNDS_LOCATIONS}/noites-e-tempestades.mp3`)
     },
     {
@@ -49,6 +51,7 @@ export default function PlaylistScreen() {
       picture: 'https://i1.sndcdn.com/artworks-000005835169-wtr0qm-t500x500.jpg',
       isLiked: false,
       name: 'Em Busca de Luz',
+      category: 'MPB',
       file: require(`${SOUNDS_LOCATIONS}/em-busca-de-luz.mp3`)
     },
     {
@@ -57,6 +60,7 @@ export default function PlaylistScreen() {
       picture: 'https://i1.sndcdn.com/artworks-000005835169-wtr0qm-t500x500.jpg',
       isLiked: false,
       name: 'Terral',
+      category: 'MPB',
       file: require(`${SOUNDS_LOCATIONS}/terral.mp3`)
     }
   ]

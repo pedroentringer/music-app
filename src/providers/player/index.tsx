@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useState } from 'react'
+import React, { createContext, ReactNode, useEffect, useState } from 'react'
 import { Audio } from 'expo-av';
 
 import Player from '../../global/@types/player'
@@ -39,6 +39,19 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
 
   const [playlist, setPlaylist] = useState<Playlist | null>()
   const [player, setPlayer] = useState(DEFAULT_VALUE)
+
+  useEffect(() => {
+    const restartPlayerlist = async () => {
+      await playSongByIndex(0)
+    }
+
+    if(player.isLoop){
+      if(!player.playingNow.song){
+        restartPlayerlist()
+      }
+    }
+    
+  }, [player.playingNow.song])
 
   const setPositionInMillis = async (millis: number) => {
     if(player.playingNow.sound){
@@ -154,7 +167,6 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
 
   const handleNext = async () => {
     setPlayer( prevPlayer => {
-
       const nextSong = prevPlayer.nexts.shift();
 
       if(!nextSong) {
