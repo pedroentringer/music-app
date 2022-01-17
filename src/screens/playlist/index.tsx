@@ -21,7 +21,7 @@ import Playlist from "../../global/@types/playlist";
 import { MotiView } from 'moti';
 import { ThemeContext } from '../../providers/theme';
 import { IconButton } from '../../components/buttons';
-import { Row, RowColumn } from '../../global/styles';
+import { RowColumn } from '../../global/styles';
 
 const SOUNDS_LOCATIONS = '../../sounds'
 
