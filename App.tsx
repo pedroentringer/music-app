@@ -1,15 +1,12 @@
 import AppIndex from "./src/AppIndex";
 
 import ThemeProvider from './src/providers/theme';
-import LanguageProvider from './src/providers/language';
 import PlayerProvider from './src/providers/player';
 
 import AppLoading from 'expo-app-loading';
 import { useFonts } from 'expo-font';
 
 import 'react-native-gesture-handler';
-import('./src/config/ReactotronConfig')
-
 
 export default function App() {
     let [fontsLoaded] = useFonts({
@@ -23,11 +20,9 @@ export default function App() {
       } else {
         return (
             <ThemeProvider>
-                <LanguageProvider>
-                  <PlayerProvider>
-                    <AppIndex />
-                  </PlayerProvider>
-                </LanguageProvider>
+                <PlayerProvider>
+                  <AppIndex />
+                </PlayerProvider>
             </ThemeProvider>
         );
       }

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import Animated, { useAnimatedStyle, useSharedValue, useAnimatedGestureHandler, withSpring, runOnJS, interpolate, Extrapolate } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue, useAnimatedGestureHandler, withTiming, runOnJS, interpolate, Extrapolate } from 'react-native-reanimated';
 import { PanGestureHandler } from 'react-native-gesture-handler';
 
 import { 
@@ -33,14 +33,7 @@ function msToTime(durationInMillis: number) {
   return { minutes, seconds } 
 }
 
-const SPRING_CONFIG = {
-  damping: 80,
-  overshootClamping: true,
-  restDisplacementThreshold: 0.1,
-  restSpeedThreshold: 0.1,
-  stiffness: 500
-}
-
+const TIMING_ANIMATION_CONFIG = {duration: 200}
 
 const Player = () => {
   const playerContext = useContext(PlayerContext)
@@ -84,7 +77,7 @@ const Player = () => {
 
   useEffect(() => {
     if(playerContext.player.playingNow.sound && !show){
-      top.value = withSpring(HEIGHT_CARD_SHOW, SPRING_CONFIG)
+      top.value = withTiming(HEIGHT_CARD_SHOW, TIMING_ANIMATION_CONFIG)
       setShow(true)
     }else if(!playerContext.player.playingNow.sound && show){
       top.value = dimensions.height
@@ -108,9 +101,9 @@ const Player = () => {
       }else{
 
         if(position > dimensions.height / 2 + 100) {
-          top.value = withSpring(HEIGHT_CARD_SHOW, SPRING_CONFIG)
+          top.value = withTiming(HEIGHT_CARD_SHOW, TIMING_ANIMATION_CONFIG)
         }else {
-          top.value = withSpring(HEIGHT_CARD_FULLSCREEN, SPRING_CONFIG)
+          top.value = withTiming(HEIGHT_CARD_FULLSCREEN, TIMING_ANIMATION_CONFIG)
         }
 
       }
@@ -119,7 +112,7 @@ const Player = () => {
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
-      top: withSpring(top.value, SPRING_CONFIG)
+      top: top.value
     }
   })
 
@@ -245,6 +238,50 @@ const Player = () => {
     };
   });
 
+  const categoryTextAnimatedStyle = useAnimatedStyle(() => {
+    const startIn = HEIGHT_CARD_SHOW - 300;
+
+    const fontSize = interpolate(
+      top.value, 
+      [startIn, HEIGHT_CARD_FULLSCREEN], 
+      [0, 14], 
+      { extrapolateRight: Extrapolate.CLAMP }
+    );
+
+    return {
+      fontSize
+    };
+  });
+
+  const smallTitleAnimatedStyle = useAnimatedStyle(() => {
+    const opacity = interpolate(
+      top.value, 
+      [HEIGHT_CARD_SHOW, HEIGHT_CARD_SHOW - 200], 
+      [1, 0], 
+      { extrapolateRight: Extrapolate.CLAMP }
+    );
+
+    return {
+      opacity,
+    };
+  });
+
+  const bigTitleAnimatedStyle = useAnimatedStyle(() => {
+    const opacity = interpolate(
+      top.value, 
+      [HEIGHT_CARD_SHOW - 100, HEIGHT_CARD_SHOW - 300], 
+      [0, 1], 
+      { extrapolateRight: Extrapolate.CLAMP }
+    );
+
+    let display = top.value < HEIGHT_CARD_SHOW - 100 ? 'flex' : 'none';
+
+    return {
+      opacity,
+      display
+    };
+  });
+
   if(!show) return <></>
 
   if(!playerContext.player.playingNow.song) return <></>
@@ -263,15 +300,25 @@ const Player = () => {
               <Animated.Image style={pictureAnimatedStyle} source={{uri: playerContext.player.playingNow.song.picture}} />
               
               <Animated.View style={[categoryAnimatedStyle, {backgroundColor: '#0477FD'}]}>
-                <Animated.Text style={[{fontSize: 14, color: '#fff'}]}>{playerContext.player.playingNow.song.category}</Animated.Text>
+                <Animated.Text style={[categoryTextAnimatedStyle, {color: '#fff'}]}>{playerContext.player.playingNow.song.category}</Animated.Text>
               </Animated.View>
             
             </Animated.View>
     
-            <TextBold>{playerContext.player.playingNow.song.name}</TextBold>
-            <TextRegular>{playerContext.player.playingNow.song.authors.join(', ')}</TextRegular>
+            <Animated.View style={[bigTitleAnimatedStyle, {paddingVertical: 30}]}>
+              <Center>
+                <TextBold style={{fontSize: 26}}>{playerContext.player.playingNow.song.name}</TextBold>
+                <TextRegular>{playerContext.player.playingNow.song.authors.join(', ')}</TextRegular>
+              </Center>
+            </Animated.View>
 
-            <Animated.View style={[{flexDirection: 'row', justifyContent: 'space-between'}]}>
+            <Animated.View style={smallTitleAnimatedStyle}>
+              <TextBold>{playerContext.player.playingNow.song.name}</TextBold>
+              <TextRegular>{playerContext.player.playingNow.song.authors.join(', ')}</TextRegular>
+            </Animated.View>
+
+
+            <Animated.View style={[bigTitleAnimatedStyle, {flexDirection: 'row', justifyContent: 'space-between'}]}>
               <TextRegular>{time.progress.minutes.toString().padStart(2, '0')}:{time.progress.seconds.toString().padStart(2, '0')}</TextRegular>
               <TextRegular>{time.total.minutes.toString().padStart(2, '0')}:{time.total.seconds.toString().padStart(2, '0')}</TextRegular>
             </Animated.View>

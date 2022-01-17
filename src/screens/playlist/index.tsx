@@ -19,12 +19,16 @@ import { PlayerContext } from "../../providers/player";
 import Song from "../../global/@types/song";
 import Playlist from "../../global/@types/playlist";
 import { MotiView } from 'moti';
+import { ThemeContext } from '../../providers/theme';
+import { IconButton } from '../../components/buttons';
+import { Row, RowColumn } from '../../global/styles';
 
 const SOUNDS_LOCATIONS = '../../sounds'
 
 export default function PlaylistScreen() {
 
   const playerContext = useContext(PlayerContext)
+  const {isDarkTheme, handleTheme} = useContext(ThemeContext)
 
   const songs: Song[] = [
     {
@@ -83,14 +87,18 @@ export default function PlaylistScreen() {
   return (
     <>
       <Container>
-        <StatusBar style='dark' />
+        <StatusBar style={isDarkTheme ? 'light' : 'dark'} />
 
         <SafeAreaView />
         <ScrollView showsVerticalScrollIndicator={false}>
 
-          <PlaylistName>  
-            <TextRegular>Playlist</TextRegular>
-            <Title>Have a Great Day!</Title>
+          <PlaylistName>
+            <RowColumn>  
+              <TextRegular>Playlist</TextRegular>
+              <Title>Have a Great Day!</Title>
+            </RowColumn>
+            
+            <IconButton icon={isDarkTheme ? 'lightbulb-outline' : 'lightbulb'} onPress={handleTheme}/>
           </PlaylistName>
 
           <PlaylistInfo>

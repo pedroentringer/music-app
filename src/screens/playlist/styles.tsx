@@ -33,6 +33,8 @@ export const PlaylistName = styled(MotiView).attrs({
     }
 })`
     margin-top: 30px;
+    flex-direction: row;
+    justify-content: space-between;
 `;
 
 export const PlaylistInfo = styled(MotiView).attrs({
