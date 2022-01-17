@@ -1,16 +1,6 @@
 import styled from "styled-components/native";
-import { SafeAreaView } from 'react-native';
 
 import Animated from "react-native-reanimated";
-
-export const ContainerMaster = styled.View`
-    position: absolute;
-    top; 0;
-    left: 0;
-    z-index: 5;
-    width: 100%;
-    height: 100%;
-`;
 
 export const ContainerMasterBackground = styled(Animated.View)`
     position: absolute;

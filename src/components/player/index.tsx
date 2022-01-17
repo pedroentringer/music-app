@@ -6,7 +6,6 @@ import {
   Container,
   ControllsContainer,
   MiniBar,
-  ContainerMaster,
   ContainerMasterBackground
 } from './styles'
 
@@ -132,8 +131,16 @@ const Player = () => {
       { extrapolateRight: Extrapolate.CLAMP }
     );
 
+    const positionTop = interpolate(
+      top.value, 
+      [HEIGHT_CARD_SHOW, HEIGHT_CARD_SHOW - 1], 
+      [dimensions.height, 0], 
+      { extrapolateRight: Extrapolate.CLAMP }
+    );
+
     return {
-      opacity: opacity
+      opacity,
+      top: positionTop
     };
   });
 
@@ -243,7 +250,7 @@ const Player = () => {
   if(!playerContext.player.playingNow.song) return <></>
 
   return (
-    <ContainerMaster>
+    <>
       <ContainerMasterBackground style={backgroundAnimatedStyle}/>
 
       <PanGestureHandler onGestureEvent={gestureHandler}>
@@ -295,7 +302,7 @@ const Player = () => {
           </Container>
       
       </PanGestureHandler>
-    </ContainerMaster>
+    </>
   )
 
 }
