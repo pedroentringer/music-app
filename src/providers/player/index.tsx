@@ -45,9 +45,18 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
       await playSongByIndex(0)
     }
 
-    if(player.isLoop){
-      if(!player.playingNow.song){
+    const finishSound = async () => {
+      if(player.playingNow.sound){
+        await player.playingNow.sound.pauseAsync();
+        await player.playingNow.sound.unloadAsync()
+      }
+    }
+
+    if(!player.playingNow.song){
+      if(player.isLoop){
         restartPlayerlist()
+      }else{
+        finishSound();
       }
     }
     
@@ -174,8 +183,8 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
           ...prevPlayer,
           isPaused: true,
           playingNow: {
-            song: null,
-            sound: null
+            ...prevPlayer.playingNow,
+            song: null
           }
         };
       }
@@ -208,8 +217,8 @@ const PlayerProvider = ({ children }: PlayerProviderProps) => {
           ...prevPlayer,
           isPaused: true,
           playingNow: {
-            song: null,
-            sound: null
+            ...prevPlayer.playingNow,
+            song: null
           }
         };
       }
