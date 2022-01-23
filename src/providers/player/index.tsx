@@ -20,7 +20,7 @@ export interface ContextProvider {
 
 export const PlayerContext = createContext({} as ContextProvider)
 
-interface PlayerProviderProps {
+interface ProviderProps {
   children?: ReactNode
 }
 
@@ -35,7 +35,7 @@ const DEFAULT_VALUE : Player = {
   },
 }
 
-const PlayerProvider = ({ children }: PlayerProviderProps) => {
+const PlayerProvider = ({ children }: ProviderProps) => {
 
   const [playlist, setPlaylist] = useState<Playlist | null>()
   const [player, setPlayer] = useState(DEFAULT_VALUE)
